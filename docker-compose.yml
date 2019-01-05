@@ -1,0 +1,14 @@
+version: "3"
+services:
+  api:
+    image: thiago1432/api-ts
+    ports:
+      - "5000:3050"
+    links:
+      - link-db
+  link-db:
+    image: tutum/mongodb
+    ports:
+      - "17017:27017"
+    environment:
+      - AUTH=no

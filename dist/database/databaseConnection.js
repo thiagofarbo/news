@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
 class Database {
     constructor() {
-        this.URL = 'mongodb://localhost:17017/newsDatabase';
+        this.URL = 'mongodb://link-db:17017/newsDatabase';
     }
     createConnection() {
         mongoose.connect(this.URL);

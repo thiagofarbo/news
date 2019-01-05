@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 class Database{
 
-    private URL = 'mongodb://localhost:17017/newsDatabase';
+    private URL = 'mongodb://link-db:17017/newsDatabase';
 
     createConnection(){
 
