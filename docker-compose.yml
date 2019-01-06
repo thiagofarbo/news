@@ -3,7 +3,7 @@ services:
   api:
     image: thiago1432/api-ts
     ports:
-      - "5000:3050"
+      - "5500:3050"
     links:
       - link-db
   link-db:
