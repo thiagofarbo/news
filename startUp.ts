@@ -2,6 +2,7 @@ import * as express from "express";
 import * as bodyParser from 'body-parser';
 import Database from './database/databaseConnection';
 import NewsResource from './resource/newsResource';
+import Auth from "./security/auth";
 
 class StartUp{
     public app: express.Application;
@@ -22,9 +23,12 @@ class StartUp{
     }
 
     routes(){
+ 
         this.app.route('/').get((request, response) => {
             response.send({versao : '0.0.1'});
         });
+        
+        this.app.use(Auth.validade);
 
         this.app.route("/api/v1/news").get(NewsResource.get);
         this.app.route("/api/v1/news/:id").get(NewsResource.getById);
