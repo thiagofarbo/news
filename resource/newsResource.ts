@@ -1,22 +1,41 @@
 import NewsService from '../service/newsServices';
 import * as HttpStatus from "http-status";
 import Helper from '../helpers/helpers';
+import * as redis from 'redis'; 
 
 class NewsResource {
 
-    get(request, response) {
-        NewsService.get()
-            .then(news => Helper.sendResponse(response, HttpStatus.OK, news))
-            .catch(error => console.error.bind(console, `Error ${error}`));
+    async get(request, response) {
+
+        let client = redis.createClient();
+
+        client.get('news', function(error, response){
+
+            if(response){
+                console.log("redis");
+                Helper.sendResponse(response, HttpStatus.OK, JSON.parse(response));
+
+            }else{
+                NewsService.get().
+                then(news => {
+                    console.log("db");
+                    client.set('news', JSON.stringify(news));
+                    client.expire('news', 2);
+
+                    Helper.sendResponse(response, HttpStatus.OK, news);
+                
+                }).catch(error => console.error.bind(console, `Error ${error}`));
+            }
+        });
     }
 
-    getById(request, response) {
+    async getById(request, response) {
         const _id = request.params.id;
         NewsService.getById(_id).then(news => Helper.sendResponse(response, HttpStatus.OK, news))
             .catch(error => console.error.bind(console, `Error ${error}`));
     }
 
-    create(request, response) {
+    async create(request, response) {
         let news = request.body;
 
         NewsService.create(news)
@@ -25,7 +44,7 @@ class NewsResource {
 
     }
 
-    update(request, response) {
+    async update(request, response) {
         const _id = request.params.id;
         let news = request.body;
 
@@ -34,7 +53,7 @@ class NewsResource {
             .catch(error => console.error.bind(console, `Error ${error}`));
     }
 
-    delete(request, response) {
+    async delete(request, response) {
         const _id = request.params.id;
 
         NewsService.delete(_id)

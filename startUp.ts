@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import Database from './database/databaseConnection';
 import NewsResource from './resource/newsResource';
 import Auth from "./security/auth";
+import uploads from "./helpers/uploads";
 
 class StartUp{
     public app: express.Application;
@@ -27,8 +28,17 @@ class StartUp{
         this.app.route('/').get((request, response) => {
             response.send({versao : '0.0.1'});
         });
-        
-        this.app.use(Auth.validade);
+
+        this.app.route("/uploads").post(uploads.single('file'), (request, response) => {
+           
+            try{
+                response.send('Arquivo enviado com sucesso!');
+            }catch(error){
+                console.log(error);
+            }
+        });
+
+        // this.app.use(Auth.validade);
 
         this.app.route("/api/v1/news").get(NewsResource.get);
         this.app.route("/api/v1/news/:id").get(NewsResource.getById);

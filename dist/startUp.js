@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const databaseConnection_1 = require("./database/databaseConnection");
 const newsResource_1 = require("./resource/newsResource");
-const auth_1 = require("./security/auth");
+const uploads_1 = require("./helpers/uploads");
 class StartUp {
     constructor() {
         this.app = express();
@@ -21,7 +21,15 @@ class StartUp {
         this.app.route('/').get((request, response) => {
             response.send({ versao: '0.0.1' });
         });
-        this.app.use(auth_1.default.validade);
+        this.app.route("/uploads").post(uploads_1.default.single('file'), (request, response) => {
+            try {
+                response.send('Arquivo enviado com sucesso!');
+            }
+            catch (error) {
+                console.log(error);
+            }
+        });
+        // this.app.use(Auth.validade);
         this.app.route("/api/v1/news").get(newsResource_1.default.get);
         this.app.route("/api/v1/news/:id").get(newsResource_1.default.getById);
         this.app.route("/api/v1/news").post(newsResource_1.default.create);
